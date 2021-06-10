@@ -133,7 +133,7 @@ void publishMessage(timeStamp_t timeStamp) {
 
   char dur[50];
   (void) sprintf(dur,"%lu",timeStamp.duration);
-  snprintf(msg,BUFFER_LEN,"{\"Device Name\" : \"HiveWifiGateway1001\", \"Connection_Start\" : \"%s\", \"Disconnected_At\" : \"%s\", \"Duration\" : \"%s\",  \"Time_Elapsed\" : \"%s\"}", timeStamp.connectTime.c_str(), timeStamp.disconnectTime.c_str(), dur,timeStamp.time_elapsed.c_str());
+  snprintf(msg,BUFFER_LEN,"{\"Device Name\" : \"HiveWifiGateway1002\", \"Connection_Start\" : \"%s\", \"Disconnected_At\" : \"%s\", \"Duration\" : \"%s\",  \"Time_Elapsed\" : \"%s\"}", timeStamp.connectTime.c_str(), timeStamp.disconnectTime.c_str(), dur,timeStamp.time_elapsed.c_str());
 //snprintf(msg,BUFFER_LEN,"{"Connection_Start" : "%s", "Disconnected_At" : "%s", "Duration" : "%lu\"}", time1.c_str(), time2.c_str(), duration);
 
   Serial.println("Publishing message");
