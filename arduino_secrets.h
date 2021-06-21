@@ -2,6 +2,12 @@
 #define SECRET_SSID "SETUP-F958"
 #define SECRET_PASS "class8133crumbs"
 
+#define DEVICE_NAME "HiveWifiGateway1004"
+#define TIMEZONE "America/Los_Angeles"
+
+// Provide official timezone names
+// https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+
 // Fill in the hostname of your AWS IoT broker
 #define SECRET_BROKER "a1z0b41nupaw6g-ats.iot.us-west-1.amazonaws.com"
 
