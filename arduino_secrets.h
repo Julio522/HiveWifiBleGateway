@@ -2,7 +2,7 @@
 #define SECRET_SSID "SETUP-F958"
 #define SECRET_PASS "class8133crumbs"
 
-#define DEVICE_NAME "HiveWifiGateway1004"
+#define DEVICE_NAME "HiveWifiGateway1001"
 #define TIMEZONE "America/Los_Angeles"
 
 // Provide official timezone names
