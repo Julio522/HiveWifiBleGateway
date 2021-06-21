@@ -28,6 +28,8 @@ const char pass[]        = SECRET_PASS;
 const char broker[]      = SECRET_BROKER;
 const char* certificate  = SECRET_CERTIFICATE;
 unsigned long lastMillis = 0;
+const char timezone[]    = TIMEZONE;
+String device_Name = DEVICE_NAME;
 
 timeStamp_t timeStampList[MAX_NUM_BLE_EVENTS];
 
@@ -85,7 +87,6 @@ void loop() {
 
   delay(500);
 
-
   // Connect to WiFi
   connectToWifi();
   printWiFiStatus();
@@ -133,7 +134,7 @@ void publishMessage(timeStamp_t timeStamp) {
 
   char dur[50];
   (void) sprintf(dur,"%lu",timeStamp.duration);
-  snprintf(msg,BUFFER_LEN,"{\"Device Name\" : \"HiveWifiGateway1001\", \"Connection_Start\" : \"%s\", \"Disconnected_At\" : \"%s\", \"Duration\" : \"%s\",  \"Time_Elapsed\" : \"%s\"}", timeStamp.connectTime.c_str(), timeStamp.disconnectTime.c_str(), dur,timeStamp.time_elapsed.c_str());
+  snprintf(msg,BUFFER_LEN,"{\"Device Name\" : \"%s\", \"Connection_Start\" : \"%s\", \"Disconnected_At\" : \"%s\", \"Duration\" : \"%s\",  \"Time_Elapsed\" : \"%s\"}", device_Name.c_str(), timeStamp.connectTime.c_str(), timeStamp.disconnectTime.c_str(), dur,timeStamp.time_elapsed.c_str());
 //snprintf(msg,BUFFER_LEN,"{"Connection_Start" : "%s", "Disconnected_At" : "%s", "Duration" : "%lu\"}", time1.c_str(), time2.c_str(), duration);
 
   Serial.println("Publishing message");
@@ -167,7 +168,7 @@ bool timeZoneInit() {
     Serial.println();
   }
   waitForSync();
-  myTZ.setLocation(F("America/Los_Angeles"));
+  myTZ.setLocation(F(timezone));
   // Provide official timezone names
   // https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 
