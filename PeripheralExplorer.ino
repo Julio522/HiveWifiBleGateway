@@ -51,8 +51,12 @@ void loop() {
     if (peripheral.localName() == "Nordic_UART") {
       // stop scanning
       BLE.stopScan();
-
-      explorerPeripheral(peripheral);
+      String uuid = "6e400003-b5a3-f393-e0a9-e50e24dcca9e";
+      BLECharacteristic myCharacteristic;
+      findCharacteristic(peripheral, uuid, myCharacteristic);
+      
+      
+      // explorerPeripheral(peripheral);
 
       // peripheral disconnected, we are done
 //      while (1) {
@@ -122,6 +126,53 @@ void exploreService(BLEService service) {
       Serial.print("mom not found");
     }
     exploreCharacteristic(characteristic);
+  }
+}
+
+void findCharacteristic(BLEDevice peripheral, String uuid, BLECharacteristic myCharacteristic) {
+
+  Serial.println("Running findCharacteristic"); 
+  // connect to the peripheral
+  Serial.println("Connecting ...");
+
+  if (peripheral.connect()) {
+    Serial.println("Connected");
+  } else {
+    Serial.println("Failed to connect!");
+    return;
+  }
+
+  // discover peripheral attributes
+  Serial.println("Discovering attributes ...");
+  if (peripheral.discoverAttributes()) {
+    Serial.println("Attributes discovered");
+  } else {
+    Serial.println("Attribute discovery failed!");
+    peripheral.disconnect();
+    return;
+  }
+
+  // read and print device name of peripheral
+  Serial.println();
+  Serial.print("Device name: ");
+  Serial.println(peripheral.deviceName());
+  Serial.print("Appearance: 0x");
+  Serial.println(peripheral.appearance(), HEX);
+  Serial.println();
+
+  
+  // loop the services of the peripheral and explore each
+  for (int i = 0; i < peripheral.serviceCount(); i++) {
+    BLEService service = peripheral.service(i);
+    for (int i = 0; i < service.characteristicCount(); i++) {
+      BLECharacteristic characteristic = service.characteristic(i);
+      String currUuid = characteristic.uuid();
+      if (currUuid.equals(uuid)) {
+        exploreCharacteristic(characteristic);
+        myCharacteristic = characteristic;
+      }
+    }
+    
   }
 }
 
