@@ -16,6 +16,8 @@
 
 #include <ArduinoBLE.h>
 
+
+
 void setup() {
   Serial.begin(9600);
   while (!Serial);
@@ -28,7 +30,7 @@ void setup() {
   }
 
   Serial.println("BLE Central - Peripheral Explorer");
-
+  
   // start scanning for peripherals
   BLE.scan();
 }
@@ -39,21 +41,65 @@ void loop() {
 
   if (peripheral) {
     // discovered a peripheral, print out address, local name, and advertised service
-    Serial.print("Found ");
-    Serial.print(peripheral.address());
-    Serial.print(" '");
-    Serial.print(peripheral.localName());
-    Serial.print("' ");
-    Serial.print(peripheral.advertisedServiceUuid());
-    Serial.println();
+//    Serial.print("Found ");
+//    Serial.print(peripheral.address());
+//    Serial.print(" '");
+//    Serial.print(peripheral.localName());
+//    Serial.print("' ");
+//    Serial.print(peripheral.advertisedServiceUuid());
+//    Serial.println();
 
     // see if peripheral is a Nordic_UART
     if (peripheral.localName() == "Nordic_UART") {
       // stop scanning
       BLE.stopScan();
       String uuid = "6e400003-b5a3-f393-e0a9-e50e24dcca9e";
+      
+      // After this call, myCharacteristic stores the characteristic we're looking for
       BLECharacteristic myCharacteristic;
       findCharacteristic(peripheral, uuid, myCharacteristic);
+
+      // Subscribe code
+      Serial.println("Subscribing to simple key characteristic ...");
+      if (!myCharacteristic) {
+        Serial.println("no characteristic found!");
+        peripheral.disconnect();
+        return;
+      } else if (!myCharacteristic.canSubscribe()) {
+        Serial.println("simple is not subscribable!");
+        peripheral.disconnect();
+        return;
+      } else if (!myCharacteristic.subscribe()) {
+        Serial.println("subscription failed!");
+        peripheral.disconnect();
+        return;
+      }
+      Serial.println("enter while loop");
+
+      
+      //Serial.println(myCharacteristic.writeValue(values, 20));
+      while(1) {
+      //while(peripheral.connected()) {
+        if(myCharacteristic.valueUpdated()) {
+          int l = 20;
+          char values[l];
+          
+          myCharacteristic.readValue(values, l);
+          Serial.println("update");
+          for (int i=0; i < l; i++) {
+            Serial.print(values[i]);
+          }
+          Serial.println();
+
+
+          // Send values via MQTT
+          
+        }
+        else {
+          //Serial.println("not updated");
+        }
+      }
+
       
       
       // explorerPeripheral(peripheral);
@@ -129,7 +175,7 @@ void exploreService(BLEService service) {
   }
 }
 
-void findCharacteristic(BLEDevice peripheral, String uuid, BLECharacteristic myCharacteristic) {
+void findCharacteristic(BLEDevice peripheral, String uuid, BLECharacteristic &myCharacteristic) {
 
   Serial.println("Running findCharacteristic"); 
   // connect to the peripheral
